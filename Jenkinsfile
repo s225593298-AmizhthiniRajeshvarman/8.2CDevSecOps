@@ -12,17 +12,15 @@ pipeline {
     stage('Run Tests') {
       steps {
         bat '''
-          snyk test
-          exit /b 0
+          snyk test || exit /b 0
         '''
       }
     }
     stage('NPM Audit (Security Scan)') {
       steps {
         bat '''
-          snyk auth $env:SNYK_TOKEN
-          npm audit
-          exit /b 0
+          snyk auth %SNYK_TOKEN%
+          npm audit || exit /b 0
         '''
       }
     }
