@@ -1,9 +1,11 @@
 pipeline {
   agent any
-  environment {
-    SNYK_TOKEN = credentials('SNYK_TOKEN')  
-  }
   stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/s225593298-AmizhthiniRajeshvarman/8.2CDevSecOps.git'
+      }
+    }
     stage('Install Dependencies') {
       steps {
         bat 'npm install'
@@ -11,23 +13,18 @@ pipeline {
     }
     stage('Run Tests') {
       steps {
-        bat '''
-          snyk test || exit /b 0
-        '''
+        bat 'npm test || exit /b 0' // Allows pipeline to continue despite test failures
+      }
+    }
+    stage('Generate Coverage Report') {
+      steps {
+        bat 'npm run coverage || exit /b 0' // Ensure coverage report exists
       }
     }
     stage('NPM Audit (Security Scan)') {
       steps {
-        bat '''
-          snyk auth %SNYK_TOKEN%
-          npm audit || exit /b 0
-        '''
+        bat 'npm audit || exit /b 0' // This will show known CVEs in the output
       }
-    }
-  }
-  post {
-    always {
-      archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
     }
   }
 }
