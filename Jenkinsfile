@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  environment {
+    SNYK_TOKEN = credentials('SNYK_TOKEN')  
+  }
   stages {
     stage('Install Dependencies') {
       steps {
@@ -9,7 +12,7 @@ pipeline {
     stage('Run Tests') {
       steps {
         bat '''
-          npm test
+          snyk test
           exit /b 0
         '''
       }
@@ -17,6 +20,7 @@ pipeline {
     stage('NPM Audit (Security Scan)') {
       steps {
         bat '''
+          snyk auth $env:SNYK_TOKEN
           npm audit
           exit /b 0
         '''
