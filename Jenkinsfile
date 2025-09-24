@@ -25,7 +25,7 @@ pipeline {
       emailext(
         subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
         body: "The build succeeded. See the attached logs.",
-        to: 'ami25pa@example.com',
+        to: 'ami25pa@gmail.com',
         attachLog: true
       )
     }
@@ -33,7 +33,7 @@ pipeline {
       emailext(
         subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
         body: "The build failed. See the attached logs.",
-        to: 'ami25pa@example.com',
+        to: 'ami25pa@gmail.com',
         attachLog: true
       )
     }
