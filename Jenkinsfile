@@ -1,11 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/s225593298-AmizhthiniRajeshvarman/8.2CDevSecOps.git'
-      }
-    }
     stage('Install Dependencies') {
       steps {
         bat 'npm install'
@@ -13,18 +8,34 @@ pipeline {
     }
     stage('Run Tests') {
       steps {
-        bat 'npm test || exit /b 0' // Allows pipeline to continue despite test failures
-      }
-    }
-    stage('Generate Coverage Report') {
-      steps {
-        bat 'npm run coverage || exit /b 0' // Ensure coverage report exists
+        bat 'npm test || exit /b 0'
       }
     }
     stage('NPM Audit (Security Scan)') {
       steps {
-        bat 'npm audit || exit /b 0' // This will show known CVEs in the output
+        bat 'npm audit || exit /b 0'
       }
+    }
+  }
+  post {
+    always {
+      archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+    }
+    success {
+      emailext(
+        subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: "The build succeeded. See the attached logs.",
+        to: 'your-email@example.com',
+        attachLog: true
+      )
+    }
+    failure {
+      emailext(
+        subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: "The build failed. See the attached logs.",
+        to: 'your-email@example.com',
+        attachLog: true
+      )
     }
   }
 }
