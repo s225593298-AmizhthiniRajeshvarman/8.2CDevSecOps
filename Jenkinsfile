@@ -1,4 +1,4 @@
-pipeline {
+pipeline{
   agent any
   stages {
     stage('Install Dependencies') {
@@ -17,25 +17,28 @@ pipeline {
       }
     }
   }
-  post {
-    always {
-      archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
-    }
-    success {
-      emailext(
-        subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: "The build succeeded. See the attached logs.",
-        to: 'ami25pa@gmail.com',
-        attachLog: true
-      )
-    }
-    failure {
-      emailext(
-        subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: "The build failed. See the attached logs.",
-        to: 'ami25pa@gmail.com',
-        attachLog: true
-      )
-    }
+post {
+  always {
+    echo "Post block started"
+    archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
   }
+  success {
+    echo "Post block: sending success email"
+    emailext(
+      subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+      body: "The build succeeded. See the attached logs.",
+      to: 'ami25pa@gmail.com',
+      attachLog: true
+    )
+  }
+  failure {
+    echo "Post block: sending failure email"
+    emailext(
+      subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+      body: "The build failed. See the attached logs.",
+      to: 'ami25pa@gmail.com',
+      attachLog: true
+    )
+  }
+}
 }
