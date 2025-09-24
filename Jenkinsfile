@@ -18,24 +18,26 @@ pipeline {
     }
   }
   post {
-    always {
-      archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
-    }
-    success {
-      emailext(
-        subject: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: "The build succeeded. See the attached logs.",
-        to: 'ami25pa@gmail.com',
-        attachLog: true
-      )
-    }
-    failure {
-      emailext(
-        subject: "Build Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: "The build failed. See the attached logs.",
-        to: 'ami25pa@gmail.com',
-        attachLog: true
-      )
-    }
+  always {
+    echo "Running post always block"
+    archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+  }
+  success {
+    echo "Sending success email"
+    emailext(
+      subject: "...",
+      body: "...",
+      to: 'ami25pa@gmail.com',
+      attachLog: true
+    )
+  }
+  failure {
+    echo "Sending failure email"
+    emailext(
+      subject: "...",
+      body: "...",
+      to: 'ami25pa@gmail.com',
+      attachLog: true
+    )
   }
 }
